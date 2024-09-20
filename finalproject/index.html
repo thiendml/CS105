@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+	<title>Computer Graphic Project</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<link href="./css/style.css">
+	<link rel="icon" href="images\logo.png">
+
+	<style type="text/css" >
+		.nav {display:block;}
+		.menu {background: #ffffffaf; height: 30px; width: 1000px;}
+		.menu li{float: left; color: lightgreen; list-style:square;margin-right: 5px; margin-top: 10px; width: 120px;}
+		.menu li :hover {background: lightslategray;}
+		.menu li a{color: dimgray; font-size: 16px; font-weight: bold;}
+		.menu li ul li{display:none; width: 120px; margin-top: 10px; margin-left: -60px;}
+		.menu li:hover ul li{display: block}
+		.light-button {
+            background-color: #4CAF50; /* Màu nền */
+            border: none; /* Không viền */
+            color: white; /* Màu chữ */
+            padding: 10px 20px; /* Kích thước */
+            text-align: center; /* Căn chỉnh chữ */
+            text-decoration: none; /* Không gạch chân */
+            display: inline-block; /* Hiển thị thành nút */
+            font-size: 14px; /* Kích thước chữ */
+            margin-right: 10px; /* Khoảng cách với nút khác */
+            cursor: pointer; /* Con trỏ tay khi di chuột qua */
+            border-radius: 5px; /* Bo tròn viền */
+        }
+
+        /* Thiết lập kiểu cho nút ánh sáng khi di chuột qua */
+        .light-button:hover {
+            background-color: #45a049; /* Màu nền khi di chuột qua */
+        }
+
+		
+	</style>
+		<script src="js/jquery.min.js"></script>
+		<script src="js/bootstrap.min.js"></script>
+		<script src="js/main.js"></script>
+		<script type="module" src="./index.js"></script>
+		<script src="js/bootstrap-colorpicker.js"></script>
+		<script>
+			$(document).ready(function () 
+			{
+				const $valueSpanFOV = $('.valueSpanFOV');
+				const $valueSpanNear = $('.valueSpanNear');
+				const $valueSpanFar = $('.valueSpanFar');
+	
+				const $valueFOV = $('#customFOV');
+				const $valueNear = $('#customNear');
+				const $valueFar = $('#customFar');
+	
+				$valueSpanFOV.html("Field of View: " + $valueFOV.val());
+				$valueFOV.on('input change', () => 
+				{
+					$valueSpanFOV.html("Field of View: " + $valueFOV.val());
+					setFOV($valueFOV.val());
+				});
+	
+				$valueSpanNear.html("Near: " + $valueNear.val());
+				$valueNear.on('input change', () => 
+				{
+					$valueSpanNear.html("Near: " + $valueNear.val());
+					setNear($valueNear.val());
+				});
+	
+				$valueSpanFar.html("Far: " + $valueFar.val());
+				$valueFar.on('input change', () => 
+				{
+					$valueSpanFar.html("Far: " + $valueFar.val());
+					setFar($valueFar.val());
+				});
+			});	
+		</script>
+
+
+<script type="importmap">
+	{
+	  "imports": {
+		"three": "https://cdn.jsdelivr.net/npm/three@v0.162.0/build/three.module.js",
+		"three/addons/": "https://cdn.jsdelivr.net/npm/three@v0.162.0/examples/jsm/"
+	  }
+	}
+  </script>
+
+		
+</head>
+
+<body>
+	<div id='rendering'>
+		<nav style="position:fixed; height: 35px; margin-top: 10px; margin-left: 10px; text-align:left;">
+			<a style="font-size: 14px; font-weight: bold; color: dimgray; font-family: Arial;">DoAn</a>
+
+			<!-- <div id="light-buttons">
+				<button class="light-button" onclick="setLightType('point')">Point Light</button>
+				<button class="light-button" onclick="setLightType('ambient')">Ambient Light</button>
+				<button class="light-button" onclick="setLightType('directional')">Directional Light</button>
+				<button class="light-button" onclick="setLightType('spot')">Spotlight</button>
+			</div> -->
+			
+		 	<!-- <button type="button" style="color: orangered; position: fixed; left: 650px; top:53px; font-family: 'Gill Sans MT'; font-weight: bold; font-style: unset; width: 50px; height: 30px;" onclick="Pause()">▌▌</button>
+			<button type="button" style="color: green; position: fixed; left: 710px; top:53px; font-family: 'Gill Sans MT'; font-weight: bold; font-style: unset; width: 50px; height: 30px;" onclick="Play()">▶</button>
+			<button type="button" style="color: blue; position: fixed; left: 770px; top:53px; font-family: 'Gill Sans MT'; font-weight: bold; font-style: unset; width: 50px; height: 30px;" onclick="Reset()">🔙</button> -->
+
+			<div class="menu">
+				<ul>
+					<li>
+						<a style="color: darkslategray; font-weight: bold; font-family: 'Gill Sans MT';">OBJECT</a>
+						<ul>
+							<li><a onclick="RenderGeo(1);">|| Cube</a></li>
+							<li><a onclick="RenderGeo(2);">|| Sphere</a></li>
+							<li><a onclick="RenderGeo(3);">|| Cone</a></li>
+							<li><a onclick="RenderGeo(4);">|| Cylinder</a></li>
+							<li><a onclick="RenderGeo(5);">|| Torus</a></li>                            
+							<li><a onclick="RenderGeo(6);">|| Teapot</a></li>
+							<li><a onclick="RenderGeo(7);">|| Icosahedron</a></li>
+							<li><a onclick="RenderGeo(8);">|| Dodecahedron</a></li>
+							<li><a onclick="RenderGeo(9);">|| Octahedron</a></li>
+							<li><a onclick="RenderGeo(10);">|| Tetrahedron</a></li>
+							<li><a onclick="RenderGeo(11);">|| Lathe</a></li>
+							<li><a onclick="RenderGeo(12);">|| TorusKnot</a></li>
+						</ul>
+					</li>
+					
+					<li>
+						<a style="color: darkslategray; font-weight: bold; font-family: 'Gill Sans MT';">SURFACE</a>
+						<ul>
+							<li><a onclick="SetMaterial(1)">|| Point</a></li>
+							<li><a onclick="SetMaterial(2)">|| Line</a></li>
+							<li><a onclick="SetMaterial(3)">|| Solid</a></li>
+						</ul>
+					</li>
+
+					<li>
+						<a style="color: darkslategray; font-weight: bold; font-family: 'Gill Sans MT';">TEXTURE</a>
+						<ul>
+							<li><a onclick="Texture(1)">|| Astronaut</a></li>
+							<li><a onclick="Texture(2)">|| Flower</a></li>
+							<li><a onclick="Texture(3)">|| Building</a></li>
+							<li><a onclick="Texture(4)">|| Smoke</a></li>
+							<li><a onclick="Texture(5)">|| Fruits</a></li>
+						</ul>
+					</li>
+
+					<li>
+						<a style="color: darkslategray; font-weight: bold; font-family: 'Gill Sans MT';">AFFINE</a>
+						<ul>
+							<li><a onclick="Translate()">|| Translate</a></li>
+							<li><a onclick="Rotate()">|| Rotate</a></li>
+							<li><a onclick="Scale()">|| Scale</a></li>
+						</ul>
+					</li>
+
+					<li>
+						<a style="color: darkslategray; font-weight: bold; font-family: 'Gill Sans MT';">ANIMATION</a>
+						<ul>
+							<li><a onclick="Animate_1()">|| Rotate x</a></li>
+							<li><a onclick="Animate_2()">|| Rotate y</a></li>
+							<li><a onclick="Animate_3()">|| Rotate xy</a></li>
+							<li><a onclick="Animate_4()">|| Rotate xyz</a></li>
+							<li><a onclick="Animate_5()">|| Custom 1</a></li>
+							<li><a onclick="Animate_6()">|| Custom 2</a></li>
+						</ul>
+					</li>
+
+					<li>
+						<a style="color: darkslategray; font-weight: bold; font-family: 'Gill Sans MT';">MODEL LIST</a>
+						<ul>
+							<li><a onclick="LoadModel('Model1');">Model 1</a></li>
+							<li><a onclick="LoadModel('Model2');">Model 2</a></li>
+							<li><a onclick="LoadModel('Model3');">Model 3</a></li>
+							<li><a onclick="LoadModel('Model4');">Model 4</a></li>
+							<li><a onclick="LoadModel('Model5');">Model 5</a></li>
+						</ul>
+					</li>
+
+
+					<li>
+						<a style="color: darkslategray; font-weight: bold; font-family: 'Gill Sans MT';">LIGHT</a>
+						<ul>
+							<li><a onclick="setLightType('point')">Point Light</a></li>
+							<li><a onclick="setLightType('ambient')">Ambient Light</a></li>
+							<li><a onclick="setLightType('directional')">Directional Light</a></li>
+							<li><a onclick="setLightType('spot')">Spotlight</a></li>
+
+						</ul>
+					</li>
+
+
+
+
+
+
+
+				</ul>
+			</div>
+		</nav>
+	</div>
+
+	<div id="content">
+		<nav style="position:fixed; height: 35px; margin-top: 10px; margin-left: 10px; text-align:left;">
+
+			<label style="color: dimgray; position: fixed; left: 1250px; top:20px; font-family: 'Gill Sans MT'; font-weight: bold; font-style: unset;">CONTROL PANNEL</label>
+			<label style="color: dimgray; position: fixed; left: 1250px; top:50px; font-family: 'Gill Sans MT'; font-style: unset;">- FOV :</label>
+			<label style="color: dimgray; position: fixed; left: 1250px; top:80px; font-family: 'Gill Sans MT'; font-style: unset;">- Near:</label>
+			<label style="color: dimgray; position: fixed; left: 1250px; top:110px; font-family: 'Gill Sans MT'; font-style: unset;">- Far :</label>
+			<div>
+				<input type="range" id="customFOV" min="0" max="150" value="75" style="position: fixed; right: 40px; top:50px;">
+				<input type="range" id="customNear" min="70" max="250" value="70" style="position: fixed; right: 40px; top:80px;">
+				<input type="range" id="customFar" min="70" max="250" value="250" style="position: fixed; right: 40px; top:110px;">
+			</div>
+
+			<label for="colorpicker1" style="color: dimgray; position: fixed; left:1250px; top:160px; font-family: 'Gill Sans MT'; font-style: unset;">- Object Color:</label>
+   			<input type="color" id="colorpicker1" value="#ffffff" style="position: fixed; right: 90px; top:150px; width: 70px;">
+			<button type="button" style="color: dimgray; position: fixed; right: 43px; top:154px; font-family: 'Gill Sans MT'; font-weight: bold; font-style: unset; color: limegreen;" onclick="SetColor()">✔</button>
+			
+			<label for="colorpicker2" style="color: dimgray; position: fixed; left:1250px; top:210px; font-family: 'Gill Sans MT'; font-style: unset;">- Light Color:</label>
+			<input type="color" id="colorpicker2" value="#ffffff" style="position: fixed; right: 90px; top:200px; width: 70px;">
+		 	<button type="button" style="color: dimgray; position: fixed; right: 43px; top:203px; font-family: 'Gill Sans MT'; font-weight: bold; font-style: unset; color: limegreen;" onclick="setLight()">✔</button>
+		</nav>
+
+		<div style="position: fixed; left: 1250px; top:250px;">
+			<button type="button" style="color: orangered; font-family: 'Gill Sans MT'; font-weight: bold; font-style: unset; width: 50px; height: 30px;" onclick="Pause()">▌▌</button>
+			<button type="button" style="color: green; font-family: 'Gill Sans MT'; font-weight: bold; font-style: unset; width: 50px; height: 30px;" onclick="Play()">▶</button>
+			<button type="button" style="color: blue; font-family: 'Gill Sans MT'; font-weight: bold; font-style: unset; width: 50px; height: 30px;" onclick="Reset()">🔙</button>
+		</div>
+
+
+		
+	</div>
+	
+</body>
+
+</html>
